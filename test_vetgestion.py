@@ -1,6 +1,67 @@
 import unittest
 import VeterinariaLimaVet
+from unittest.mock import patch
 class TestVetGestion(unittest.TestCase):
+    def test_asignacion_fifo(self):
+        modulo = VeterinariaLimaVet
+
+        modulo.propietarios.clear()
+        modulo.mascotas.clear()
+        modulo.veterinarios.clear()
+        modulo.citas.clear()
+
+        propietario = modulo.Propietario("Juan Perez", "987654321")
+        veterinario = modulo.Veterinario("Carlos Ramirez", "Medicina general")
+
+        rocky = modulo.Mascota("Rocky", 4, "Labrador", propietario)
+        luna = modulo.Mascota("Luna", 3, "Golden", propietario)
+        maximo = modulo.Mascota("Maximo", 2, "Beagle", propietario)
+
+        cita_rocky = modulo.Cita(rocky, veterinario, "Chequeo", "27/11/2026", "09:00")
+        cita_luna = modulo.Cita(luna, None, "Control", "27/11/2026", "09:05")
+        cita_maximo = modulo.Cita(maximo, None, "Vacunacion", "27/11/2026", "09:10")
+
+        modulo.citas.extend([cita_rocky, cita_luna, cita_maximo])
+
+        with patch("builtins.input", return_value="1"):
+            with patch.object(modulo, "guardar_datos"):
+                modulo.finalizar_cita()
+
+        self.assertEqual(cita_rocky.estado, "Finalizada")
+        self.assertEqual(cita_luna.veterinario, veterinario)
+        self.assertEqual(cita_luna.estado, "En atención")
+        self.assertIsNone(cita_maximo.veterinario)
+        self.assertEqual(cita_maximo.estado, "En espera")
+    def test_asignacion_fifo(self):
+        modulo = VeterinariaLimaVet
+
+        modulo.propietarios.clear()
+        modulo.mascotas.clear()
+        modulo.veterinarios.clear()
+        modulo.citas.clear()
+
+        propietario = modulo.Propietario("Juan Perez", "987654321")
+        veterinario = modulo.Veterinario("Carlos Ramirez", "Medicina general")
+
+        rocky = modulo.Mascota("Rocky", 4, "Labrador", propietario)
+        luna = modulo.Mascota("Luna", 3, "Golden", propietario)
+        maximo = modulo.Mascota("Maximo", 2, "Beagle", propietario)
+
+        cita_rocky = modulo.Cita(rocky, veterinario, "Chequeo", "27/11/2026", "09:00")
+        cita_luna = modulo.Cita(luna, None, "Control", "27/11/2026", "09:05")
+        cita_maximo = modulo.Cita(maximo, None, "Vacunacion", "27/11/2026", "09:10")
+
+        modulo.citas.extend([cita_rocky, cita_luna, cita_maximo])
+
+        with patch("builtins.input", return_value="1"):
+            with patch.object(modulo, "guardar_datos"):
+                modulo.finalizar_cita()
+
+        self.assertEqual(cita_rocky.estado, "Finalizada")
+        self.assertEqual(cita_luna.veterinario, veterinario)
+        self.assertEqual(cita_luna.estado, "En atención")
+        self.assertIsNone(cita_maximo.veterinario)
+        self.assertEqual(cita_maximo.estado, "En espera")
     def test_crear_propietario(self):
         propietario = VeterinariaLimaVet.Propietario(
             "Juan Perez",
